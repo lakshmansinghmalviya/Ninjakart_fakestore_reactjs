@@ -1,0 +1,30 @@
+.appbar {
+    background-color: #1976d2;
+  }
+  
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+  
+  .logo {
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .navButton {
+    color: white;
+  }
+  
+  .loginButton {
+    border-color: white !important;
+    color: white !important;
+  }
+  

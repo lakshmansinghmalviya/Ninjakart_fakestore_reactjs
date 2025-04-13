@@ -1,0 +1,33 @@
+.modalBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1vh;
+}
+
+.title {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.input {
+  margin-top: 8px;
+}
+
+.loginButton {
+  margin-top: 16px;
+}
+.buttonAsText{
+  text-transform: 'none';
+  font-size: 12px;
+}
