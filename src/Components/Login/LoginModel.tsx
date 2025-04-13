@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
+import { GitHub, Google, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
-  Modal,
   Box,
-  Typography,
-  TextField,
   Button,
   Fade,
-  Backdrop,
-  InputAdornment,
   IconButton,
+  InputAdornment,
+  Modal,
   Stack,
+  TextField,
+  Typography
 } from '@mui/material';
-import { GitHub, Google, Visibility, VisibilityOff } from '@mui/icons-material';
-import styles from './LoginModel.module.css';
+import React, { useState } from 'react';
 import { buttonAsText, scrollableModel } from '../CommonStyle/CommonCSSObjects';
-import RegisterModal from '../Register/RegisterModel';
+import styles from './LoginModel.module.css';
 
 interface LoginModalProps {
   open: boolean;
@@ -27,7 +25,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSubmit, onSwit
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [openRegisterForm, setOpenRegisterForm] = useState<boolean>(false);
 
   const handleSubmit = () => {
     onSubmit(username, password);
