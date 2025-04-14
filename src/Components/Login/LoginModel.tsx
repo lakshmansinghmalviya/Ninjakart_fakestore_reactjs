@@ -28,7 +28,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSubmit, onSwit
 
   const handleSubmit = () => {
     onSubmit(username, password);
-    onClose();
+    // onClose();
   };
 
   return (
