@@ -57,7 +57,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose, onSubmit, 
                         Create Your Account 🛍️
                     </Typography>
 
-                    <form onSubmit={handleSubmit(handleFormSubmit)}>
+                    {/* <form onSubmit={handleSubmit(handleFormSubmit)}> */}
                         <TextField
                             fullWidth
                             label="Username"
@@ -72,9 +72,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose, onSubmit, 
                             fullWidth
                             label="Email"
                             variant="outlined"
-                            {...register('email')}
-                            error={!!errors.email}
-                            helperText={errors.email?.message}
+                            // {...register('email')}
+                            // error={!!errors.email}
+                            // helperText={errors.email?.message}
                             className={styles.input}
                         />
 
@@ -110,7 +110,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose, onSubmit, 
                         >
                             Register
                         </Button>
-                    </form>
+                    {/* </form> */}
 
                     <Stack direction="row" justifyContent="center" alignItems="center">
                         <Typography variant="body2">Have an account?</Typography>
