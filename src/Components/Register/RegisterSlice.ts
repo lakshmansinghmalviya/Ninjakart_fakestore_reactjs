@@ -2,14 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Register } from './RegisterTypes';
 
 interface RegisterState {
-    register: Register;
+    registerUser: Register;
     registerLoading: boolean;
     registerError: string;
     registerMessage: string;
 }
 
 const initialState: RegisterState = {
-    register: {
+    registerUser: {
         "id": 0,
         "username": "",
         "email": "",
@@ -34,7 +34,7 @@ const registerSlice = createSlice({
         registerUserSuccess: (state, action: PayloadAction<{ msg: string, data: Register }>) => {
             state.registerLoading = false;
             state.registerMessage = action.payload.msg ?? '';
-            state.register = action.payload.data
+            state.registerUser = action.payload.data
         },
         registerUserFailure: (state, action: PayloadAction<string>) => {
             state.registerLoading = false;

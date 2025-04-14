@@ -1,20 +1,20 @@
-// src/features/register/registerSaga.ts
 
-import { call, delay, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { call, delay, put, takeLatest } from 'redux-saga/effects';
+import { apiCall } from '../../Common/CommonApiCall/ApiCall';
+import { getPublicHeader } from '../../Common/CommonHeader/Headers';
+import { apiBaseUrl } from '../../Common/CommonValueVariable/CommonValueVariable';
 import {
+    registerUserFailure,
     registerUserRequest,
     registerUserSuccess,
-    registerUserFailure,
 } from './RegisterSlice';
 import { Register } from './RegisterTypes';
-import { registerUser } from './RegisterApi';
 
 function* handleRegisterUser(action: PayloadAction<Register>) {
+    const url = `${apiBaseUrl}/users`
     try {
-        yield delay(1000);//just to see the button disabled not required in production
-        const response: Register = yield call(registerUser, action.payload);
-        // throw new Error("Creation failed"); // to test the error dispatch
+        const response: Register = yield call(apiCall, url, 'POST', getPublicHeader(), action.payload);
         yield put(registerUserSuccess({ msg: "Registered successfully ", data: response }));
     } catch (error: unknown) {
         yield put(registerUserFailure((error as Error).message));

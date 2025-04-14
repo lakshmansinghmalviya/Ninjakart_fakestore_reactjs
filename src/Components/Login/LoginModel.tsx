@@ -10,12 +10,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { buttonAsText, scrollableModel } from '../CommonStyle/CommonCSSObjects';
 import styles from './LoginModel.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Redux/Store';
+import { toast } from 'react-toastify';
+import { loginUserRequest, resetSomeLoginState } from './LoginSlice';
 
 interface LoginModalProps {
   open: boolean;
@@ -29,29 +33,45 @@ const schema = yup.object({
   password: yup.string().required('Password is required'),
 });
 
-const LoginModal: React.FC<LoginModalProps> = ({
-  open,
-  onClose,
-  onSubmit,
-  onSwitchToRegister,
-}) => {
+const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSubmit, onSwitchToRegister, }) => {
   const [showPassword, setShowPassword] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const { register, handleSubmit, formState: { errors }, reset, } = useForm({
     resolver: yupResolver(schema),
   });
+  const { loginUser, loginMessage, loginError, loginLoading } = useSelector((state: RootState) => state.login);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // if (loginUser) {
+    //     console.log(JSON.stringify(registerUser));//testibg
+    // }
+    if (loginMessage) {
+      toast.success(loginMessage);
+      onClose();
+      dispatch(resetSomeLoginState())
+    }
+    if (loginError) {
+      toast.error(loginError);
+      setTimeout(() => {
+        dispatch(resetSomeLoginState())
+      }, 1000)
+    }
+  }, [loginMessage, loginError])
+
+
+  // const handleFormSubmit = (data: any) => {
+
+  //   onSubmit(data.username, data.password);
+  //   reset(); // clear the form after submit
+  //   // onClose(); // optional: auto-close modal
+  // };
 
   const handleFormSubmit = (data: any) => {
+    dispatch(loginUserRequest(data))
+    console.log("Data on submit : " + JSON.stringify(data));
     onSubmit(data.username, data.password);
-    reset(); // clear the form after submit
-    // onClose(); // optional: auto-close modal
-  };
-
+    // reset();
+};
   return (
     <Modal open={open} onClose={onClose} BackdropProps={{ timeout: 0 }}>
       <Fade in={open}>
@@ -95,9 +115,12 @@ const LoginModal: React.FC<LoginModalProps> = ({
             variant="contained"
             color="primary"
             onClick={handleSubmit(handleFormSubmit)}
+            disabled={loginLoading}
             className={styles.loginButton}
           >
-            Login
+            {
+              loginLoading ? 'Loging...' : 'Login'
+            }
           </Button>
 
           <Stack direction="row" justifyContent="space-between">

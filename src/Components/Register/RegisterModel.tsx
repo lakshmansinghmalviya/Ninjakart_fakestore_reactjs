@@ -70,10 +70,13 @@ const RegisterModel: React.FC<RegisterModelProps> = ({
     const { register, handleSubmit, formState: { errors }, reset, setValue, trigger } = useForm({
         resolver: yupResolver(schema),
     });
-    const { registerMessage, registerError, registerLoading } = useSelector((state: RootState) => state.register);
+    const { registerUser, registerMessage, registerError, registerLoading } = useSelector((state: RootState) => state.register);
     const dispatch = useDispatch();
 
     useEffect(() => {
+        // if (registerUser) {
+        //     console.log(JSON.stringify(registerUser));//testibg
+        // }
         if (registerMessage) {
             toast.success(registerMessage);
             onClose();
