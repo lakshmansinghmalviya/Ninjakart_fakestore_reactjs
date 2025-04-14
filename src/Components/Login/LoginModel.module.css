@@ -27,7 +27,8 @@
 .loginButton {
   margin-top: 16px;
 }
-.buttonAsText{
+
+.buttonAsText {
   text-transform: 'none';
   font-size: 12px;
 }

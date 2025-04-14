@@ -1,5 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { GitHub, Google, Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+    GitHub,
+    Google,
+    Visibility,
+    VisibilityOff,
+    CheckCircle,
+    Cancel,
+} from '@mui/icons-material';
 import {
     Box,
     Button,
@@ -11,42 +18,87 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { buttonAsText, scrollableModel } from '../CommonStyle/CommonCSSObjects';
 import styles from '../Login/LoginModel.module.css';
+import { passwordRules } from './PasswordRules';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUserRequest, resetSomeRegisterState } from './RegisterSlice';
+import { RootState } from '../../Redux/Store';
+import { toast } from 'react-toastify';
 
-interface RegisterModalProps {
+interface RegisterModelProps {
     open: boolean;
     onClose: () => void;
     onSubmit: (username: string, email: string, password: string) => void;
     onSwitchToLogin: () => void;
 }
 
-// ✅ Yup validation schema
 const schema = yup.object({
-    username: yup.string().min(3, 'Username too short').required('Username is required'),
-    email: yup.string().email('Invalid email format').required('Email is required'),
-    password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    username: yup
+        .string()
+        .min(3, 'Username too short')
+        .matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores')
+        .required('Username is required'),
+
+    email: yup
+        .string()
+        .email('Invalid email format')
+        .required('Email is required'),
+
+    password: yup
+        .string()
+        .min(6, 'Follow password rules')
+        .test('password-strength', 'Follow password rules',
+            (value = '') => {
+                const passwordRules = [/[A-Z]/, /[a-z]/, /[0-9]/, /[@$!%*?&]/,];
+                return passwordRules.every((rule) => rule.test(value));
+            })
+        .required('Password is required'),
 });
 
-const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose, onSubmit, onSwitchToLogin }) => {
+const RegisterModel: React.FC<RegisterModelProps> = ({
+    open,
+    onClose,
+    onSubmit,
+    onSwitchToLogin,
+}) => {
     const [showPassword, setShowPassword] = useState(false);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset
-    } = useForm({
+    const [password, setPassword] = useState('');
+    const { register, handleSubmit, formState: { errors }, reset, setValue, trigger } = useForm({
         resolver: yupResolver(schema),
     });
+    const { registerMessage, registerError, registerLoading } = useSelector((state: RootState) => state.register);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (registerMessage) {
+            toast.success(registerMessage);
+            onClose();
+            dispatch(resetSomeRegisterState())
+        }
+        if (registerError) {
+            toast.error(registerError);
+            setTimeout(() => {
+                dispatch(resetSomeRegisterState())
+            }, 1000)
+        }
+    }, [registerMessage, registerError])
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPassword(value);
+        setValue('password', value);  // Update the form state
+        trigger('password'); // Trigger validation manually
+    };
 
     const handleFormSubmit = (data: any) => {
+        dispatch(registerUserRequest(data))
+        console.log("Data on submit : " + JSON.stringify(data));
         onSubmit(data.username, data.email, data.password);
-        reset(); // clear form
-        // onClose();
+        // reset();
     };
 
     return (
@@ -57,72 +109,99 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose, onSubmit, 
                         Create Your Account 🛍️
                     </Typography>
 
-                    {/* <form onSubmit={handleSubmit(handleFormSubmit)}> */}
-                        <TextField
-                            fullWidth
-                            label="Username"
-                            variant="outlined"
-                            {...register('username')}
-                            error={!!errors.username}
-                            helperText={errors.username?.message}
-                            className={styles.input}
-                        />
+                    <TextField
+                        fullWidth
+                        label="Username"
+                        variant="outlined"
+                        className={styles.input}
+                        {...register('username')}
+                        error={!!errors.username}
+                        helperText={errors.username?.message}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Email"
+                        variant="outlined"
+                        className={styles.input}
+                        {...register('email')}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                    />
 
-                        <TextField
-                            fullWidth
-                            label="Email"
-                            variant="outlined"
-                            // {...register('email')}
-                            // error={!!errors.email}
-                            // helperText={errors.email?.message}
-                            className={styles.input}
-                        />
+                    <TextField
+                        fullWidth
+                        label="Password"
+                        type={showPassword ? 'text' : 'password'}
+                        variant="outlined"
+                        className={styles.input}
+                        {...register('password')}
+                        onChange={handlePasswordChange}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
 
-                        <TextField
-                            fullWidth
-                            label="Password"
-                            type={showPassword ? 'text' : 'password'}
-                            variant="outlined"
-                            {...register('password')}
-                            error={!!errors.password}
-                            helperText={errors.password?.message}
-                            className={styles.input}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() => setShowPassword((prev) => !prev)}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
+                    {/* Password Criteria Checklist */}
+                    <Stack spacing={1} mt={1} mb={2}>
+                        {passwordRules.map((rule, index) => {
+                            const passed = rule.test(password);
+                            return (
+                                <Typography
+                                    key={index}
+                                    variant="body2"
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: passed ? 'green' : '#db3e38',
+                                    }}
+                                >
+                                    {passed ? (
+                                        <CheckCircle fontSize="small" sx={{ mr: 1 }} />
+                                    ) : (
+                                        <Cancel fontSize="small" sx={{ mr: 1 }} />
+                                    )}
+                                    {rule.label}
+                                </Typography>
+                            );
+                        })}
+                    </Stack>
 
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            className={styles.loginButton}
-                        >
-                            Register
-                        </Button>
-                    {/* </form> */}
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit(handleFormSubmit)}
+                        disabled={registerLoading}
+                        className={styles.loginButton}
+                    >   {
+                            registerLoading ? 'Registering...' : 'Register'
+                        }
+                        {/* Register */}
+                    </Button>
 
-                    <Stack direction="row" justifyContent="center" alignItems="center">
+                    <Stack direction="row" justifyContent="center" alignItems="center" mt={2}>
                         <Typography variant="body2">Have an account?</Typography>
                         <Button sx={buttonAsText} onClick={onSwitchToLogin}>
                             Login
                         </Button>
                     </Stack>
 
-                    <Stack direction="row" justifyContent="space-around">
-                        or you can register with
+                    <Stack direction="row" justifyContent="center" mt={2}>
+                        <Typography variant="body2">or you can register with</Typography>
                     </Stack>
-                    <Stack direction="row" spacing={2} justifyContent="center">
+
+                    <Stack direction="row" spacing={2} justifyContent="center" mt={1}>
                         <Button variant="outlined" startIcon={<Google />} color="error">
                             Google
                         </Button>
@@ -136,4 +215,4 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ open, onClose, onSubmit, 
     );
 };
 
-export default RegisterModal;
+export default RegisterModel

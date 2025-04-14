@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import styles from './Header.module.css';
 import LoginModal from '../../Login/LoginModel';
-import RegisterModal from '../../Register/RegisterModel';
+import  RegisterModel from '../../Register/RegisterModel';
 
 export const Header: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'login' | 'register' | null>(null);
@@ -27,7 +27,7 @@ export const Header: React.FC = () => {
           )}
 
           {activeModal === 'register' && (
-            <RegisterModal
+            < RegisterModel
               open={true}
               onClose={() => setActiveModal(null)}
               onSubmit={() => { /* handle register */ }}
