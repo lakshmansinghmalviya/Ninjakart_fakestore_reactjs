@@ -5,7 +5,7 @@ export const Home = () => {
     return (
         <div>
             <Header />
-            <h1>main contnet</h1>
+            <h1>main content</h1>
             <Footer />
         </div>
     )

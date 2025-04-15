@@ -99,8 +99,8 @@ const RegisterModel: React.FC<RegisterModelProps> = ({
 
     const handleFormSubmit = (data: any) => {
         dispatch(registerUserRequest(data))
-        console.log("Data on submit : " + JSON.stringify(data));
-        onSubmit(data.username, data.email, data.password);
+        // console.log("Data on submit : " + JSON.stringify(data));
+        // onSubmit(data.username, data.email, data.password);
         // reset();
     };
 

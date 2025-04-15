@@ -11,7 +11,7 @@ export const apiCall = async <T>(
             headers,
             body: data ? JSON.stringify(data) : undefined,
         };
-        console.log("Path is going like " + path);
+        console.log("Path is going like " + path + " data " + JSON.stringify(data));
         const response = await fetch(path, options);
         console.log("The res is  " + JSON.stringify(response));
         if (!response.ok) {
@@ -19,8 +19,9 @@ export const apiCall = async <T>(
             console.log("Message ==" + message);
             throw new Error(message);
         }
-        console.log("The res is like " + JSON.stringify(response));
-        return await response.json() as T; 
+        const dataToSend = await response.json() as T;
+        console.log("The res is like " + JSON.stringify(dataToSend));
+        return dataToSend;
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : 'Unknown API error');
     }

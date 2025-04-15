@@ -10,7 +10,7 @@ interface LoginState {
 
 const initialState: LoginState = {
     loginUser: {
-        token :'bhhh'
+        token: localStorage.getItem('token') ?? ''
     },
     loginLoading: false,
     loginError: '',
@@ -24,6 +24,9 @@ const loginSlice = createSlice({
         resetSomeLoginState: (state) => {
             state.loginError = '';
             state.loginMessage = '';
+        },
+        logoutUserRequest: (state) => {
+            state.loginUser.token = ''
         },
         loginUserRequest: (state, action: PayloadAction<LoginRequest>) => {
             state.loginLoading = true;
@@ -40,6 +43,6 @@ const loginSlice = createSlice({
     },
 });
 
-export const { loginUserRequest, loginUserSuccess, loginUserFailure,resetSomeLoginState } = loginSlice.actions;
+export const { loginUserRequest, loginUserSuccess, loginUserFailure, resetSomeLoginState,logoutUserRequest } = loginSlice.actions;
 
 export default loginSlice.reducer;

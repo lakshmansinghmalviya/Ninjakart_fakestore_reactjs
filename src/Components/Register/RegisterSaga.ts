@@ -13,9 +13,10 @@ import { Register } from './RegisterTypes';
 
 function* handleRegisterUser(action: PayloadAction<Register>) {
     const url = `${apiBaseUrl}/users`
+    console.log("The payload in saga "+JSON.stringify(action.payload));
     try {
         const response: Register = yield call(apiCall, url, 'POST', getPublicHeader(), action.payload);
-        yield put(registerUserSuccess({ msg: "Registered successfully ", data: response }));
+        yield put(registerUserSuccess({ msg: "Registered successfully! Please login now !! ", data: response }));
     } catch (error: unknown) {
         yield put(registerUserFailure((error as Error).message));
     }

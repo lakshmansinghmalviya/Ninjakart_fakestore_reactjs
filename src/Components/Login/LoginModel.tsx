@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Redux/Store';
 import { toast } from 'react-toastify';
 import { loginUserRequest, resetSomeLoginState } from './LoginSlice';
+import { saveToken } from '../../Common/LocalStorageLogics/LocalStorageLogics';
 
 interface LoginModalProps {
   open: boolean;
@@ -43,10 +44,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSubmit, onSwit
 
   useEffect(() => {
     // if (loginUser) {
-    //     console.log(JSON.stringify(registerUser));//testibg
+    //     console.log("Token received "+JSON.stringify(loginUser.token));//testibg
     // }
     if (loginMessage) {
       toast.success(loginMessage);
+      saveToken(loginUser.token);
       onClose();
       dispatch(resetSomeLoginState())
     }
@@ -71,7 +73,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSubmit, onSwit
     console.log("Data on submit : " + JSON.stringify(data));
     onSubmit(data.username, data.password);
     // reset();
-};
+  };
   return (
     <Modal open={open} onClose={onClose} BackdropProps={{ timeout: 0 }}>
       <Fade in={open}>
