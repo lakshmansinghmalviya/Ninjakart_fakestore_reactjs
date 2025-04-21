@@ -20,7 +20,6 @@ import { logoutUserRequest } from '../../Login/LoginSlice';
 export const Header: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'login' | 'register' | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { registerUser } = useSelector((state: RootState) => state.register);
   const { loginUser } = useSelector((state: RootState) => state.login);
   const dispatch = useDispatch();
 
@@ -57,20 +56,6 @@ export const Header: React.FC = () => {
               <SearchIcon />
             </IconButton>
           </Paper>
-
-          {/* <Paper
-            
-             sx={{ display: 'flex', height: 35, alignItems: 'center', p: '1px 6px' }}
-          > 
-            <InputBase 
-              placeholder="Search Products"
-              // value={searchTerm}
-              // onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <IconButton type="submit">
-              <SearchIcon />
-            </IconButton>
-          </Paper> */}
           {
             (!loginUser.token) ? (
               <>
